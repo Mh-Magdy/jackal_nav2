@@ -1,0 +1,16 @@
+services:
+  navigation-rosbot1:
+    image: husarion/navigation2:humble-1.1.12-20240123
+    container_name: navigation-rosbot1
+    network_mode: host
+    ipc: host
+    restart: unless-stopped
+    environment:
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-0}
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+      - ROS_NAMESPACE=/rosbot1
+    volumes:
+      - ./config/nav2_dwb_params.yaml:/params.yaml:ro
+      - ./maps:/maps:ro
+    command: bash -lc "source /opt/ros/humble/setup.bash; ros2 launch /husarion_utils/bringup_launch.py namespace:=rosbot1 slam:=False params_file:=/params.yaml map:=/maps/map.yaml use_sim_time:=False"
+    cpus: 1.2
